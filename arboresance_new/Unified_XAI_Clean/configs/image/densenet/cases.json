@@ -1,0 +1,14 @@
+{
+  "TP": [
+    "C:\\Users\\mathi\\Desktop\\Mathieu\\Cours\\A5\\DIA Specialization\\Explainability AI\\projet\\Explainability_ESILV_project\\arboresance_new\\Unified_XAI_Clean\\data/images/processed\\real\\disease_01.jpg"
+  ],
+  "FP": [
+    "C:\\Users\\mathi\\Desktop\\Mathieu\\Cours\\A5\\DIA Specialization\\Explainability AI\\projet\\Explainability_ESILV_project\\arboresance_new\\Unified_XAI_Clean\\data/images/processed\\fake\\nodisease_01.jpg"
+  ],
+  "FN": [
+    "C:\\Users\\mathi\\Desktop\\Mathieu\\Cours\\A5\\DIA Specialization\\Explainability AI\\projet\\Explainability_ESILV_project\\arboresance_new\\Unified_XAI_Clean\\data/images/processed\\real\\disease_11.jpg"
+  ],
+  "TN": [
+    "C:\\Users\\mathi\\Desktop\\Mathieu\\Cours\\A5\\DIA Specialization\\Explainability AI\\projet\\Explainability_ESILV_project\\arboresance_new\\Unified_XAI_Clean\\data/images/processed\\fake\\nodisease_05.jpg"
+  ]
+}

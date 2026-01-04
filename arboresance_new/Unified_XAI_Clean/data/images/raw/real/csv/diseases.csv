@@ -1,0 +1,16 @@
+Path,Sex,Age,Frontal/Lateral,AP/PA,No Finding,Enlarged Cardiomediastinum,Cardiomegaly,Lung Opacity,Lung Lesion,Edema,Consolidation,Pneumonia,Atelectasis,Pneumothorax,Pleural Effusion,Pleural Other,Fracture,Support Devices,patient_id,disease_names,disease_names_str,filename
+CheXpert-v1.0-small/train/patient00002/study2/view1_frontal.jpg,Female,87,Frontal,AP,,,-1.0,1.0,,-1.0,-1.0,,-1.0,,-1.0,,1.0,,patient00002,['Lung Opacity'],Lung Opacity,disease_01
+CheXpert-v1.0-small/train/patient00003/study1/view1_frontal.jpg,Male,41,Frontal,AP,,,,,,1.0,,,,0.0,,,,,patient00003,['Edema'],Edema,disease_02
+CheXpert-v1.0-small/train/patient00007/study1/view1_frontal.jpg,Male,69,Frontal,AP,,,1.0,1.0,,,,,1.0,1.0,0.0,,0.0,1.0,patient00007,['Lung Opacity'],Lung Opacity,disease_03
+CheXpert-v1.0-small/train/patient00008/study1/view1_frontal.jpg,Male,81,Frontal,AP,,,,1.0,,,,,,,1.0,,,1.0,patient00008,['Lung Opacity'],Lung Opacity,disease_04
+CheXpert-v1.0-small/train/patient00011/study1/view1_frontal.jpg,Female,19,Frontal,AP,,,,1.0,,,-1.0,,,-1.0,-1.0,,,1.0,patient00011,['Lung Opacity'],Lung Opacity,disease_05
+CheXpert-v1.0-small/train/patient00015/study1/view1_frontal.jpg,Female,76,Frontal,AP,,,,1.0,,1.0,,-1.0,,,,,,,patient00015,"['Lung Opacity', 'Edema']","Lung Opacity, Edema",disease_06
+CheXpert-v1.0-small/train/patient00016/study1/view1_frontal.jpg,Female,54,Frontal,PA,,,,1.0,,,1.0,,,0.0,,1.0,1.0,,patient00016,"['Lung Opacity', 'Consolidation']","Lung Opacity, Consolidation",disease_07
+CheXpert-v1.0-small/train/patient00017/study2/view1_frontal.jpg,Female,56,Frontal,AP,,-1.0,,,,1.0,-1.0,,,-1.0,-1.0,,,1.0,patient00017,['Edema'],Edema,disease_08
+CheXpert-v1.0-small/train/patient00018/study1/view1_frontal.jpg,Male,44,Frontal,PA,,0.0,,1.0,,0.0,0.0,,-1.0,0.0,1.0,,,,patient00018,['Lung Opacity'],Lung Opacity,disease_09
+CheXpert-v1.0-small/train/patient00019/study1/view1_frontal.jpg,Female,46,Frontal,PA,,,,,1.0,,,,,0.0,,,,,patient00019,['Lung Lesion'],Lung Lesion,disease_10
+CheXpert-v1.0-small/train/patient00022/study2/view1_frontal.jpg,Female,55,Frontal,PA,,,,1.0,,,,,,1.0,1.0,,,,patient00022,['Lung Opacity'],Lung Opacity,disease_11
+CheXpert-v1.0-small/train/patient00023/study4/view1_frontal.jpg,Male,62,Frontal,PA,,,0.0,1.0,,,,,,,1.0,,,1.0,patient00023,['Lung Opacity'],Lung Opacity,disease_12
+CheXpert-v1.0-small/train/patient00024/study1/view1_frontal.jpg,Female,78,Frontal,AP,,-1.0,,1.0,,,,,1.0,0.0,,,,1.0,patient00024,['Lung Opacity'],Lung Opacity,disease_13
+CheXpert-v1.0-small/train/patient00025/study2/view1_frontal.jpg,Male,64,Frontal,PA,,-1.0,,1.0,,,,,1.0,1.0,1.0,,,,patient00025,['Lung Opacity'],Lung Opacity,disease_14
+CheXpert-v1.0-small/train/patient00026/study1/view1_frontal.jpg,Female,42,Frontal,PA,,,,,,,1.0,,1.0,,,,,,patient00026,['Consolidation'],Consolidation,disease_15
