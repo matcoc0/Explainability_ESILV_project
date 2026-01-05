@@ -1,5 +1,51 @@
+# ===============================
+# Python virtual environments
+# ===============================
 venv/
+myvenv/
+.env/
 .venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Ignore any virtualenv-like folder (recursive)
 */venv/
 */.venv/
+*/env/
+*/myvenv/
+
+# ===============================
+# Python cache / bytecode
+# ===============================
 __pycache__/
+*/__pycache__/
+
+*.pyc
+*.pyo
+*.pyd
+
+# ===============================
+# Jupyter
+# ===============================
+.ipynb_checkpoints/
+
+# ===============================
+# Custom ignored folders
+# ===============================
+arboresance_new/
+
+# ===============================
+# OS / IDE
+# ===============================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ===============================
+# Logs / temp
+# ===============================
+*.log
+*.tmp

@@ -1,6 +1,0 @@
-{
-  "TP": "data/images/processed\\real\\disease_01.jpg",
-  "FP": "data/images/processed\\fake\\nodisease_07.jpg",
-  "FN": "data/images/processed\\real\\disease_04.jpg",
-  "TN": "data/images/processed\\fake\\nodisease_01.jpg"
-}

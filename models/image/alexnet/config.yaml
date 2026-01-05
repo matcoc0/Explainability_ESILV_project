@@ -1,7 +1,13 @@
 model_name: alexnet
-input_size: [224, 224]
+modality: image
+
 num_classes: 2
+pretrained: true
+
+input:
+  size: [224, 224]
+  channels: 3
+
 labels:
   0: fake
   1: real
-pretrained: true

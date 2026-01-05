@@ -20,4 +20,5 @@ lime
 shap
 scikit-image
 matplotlib
-yaml
+pyyaml
+streamlit
