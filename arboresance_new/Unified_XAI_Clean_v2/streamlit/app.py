@@ -1,5 +1,5 @@
 # ==================================================
-# FORCE PROJECT ROOT (CRITICAL FOR STREAMLIT)
+# FORCE PROJECT ROOT
 # ==================================================
 import os
 import sys
@@ -15,17 +15,15 @@ import streamlit as st
 import torch
 import numpy as np
 from PIL import Image
-from torchvision import transforms
-import cv2
+import tempfile
 
-# Models
-from models.image.alexnet import load_model as load_alexnet
-from models.image.densenet import load_model as load_densenet
+from models.registry import MODEL_REGISTRY
+from preprocessing.image import preprocess_image
+from preprocessing.audio import preprocess_audio
 
-# XAI (TES CLASSES)
-from xai.image.gradcam import GradCAM
-from xai.image.lime import LimeExplainer
-from xai.image.shap import ShapExplainer, shap_to_heatmap
+from xai.gradcam import GradCAM
+from xai.lime import LimeExplainer
+from xai.shap import ShapExplainer, shap_to_heatmap
 
 # ==================================================
 # Page config
@@ -36,142 +34,104 @@ st.set_page_config(
 )
 
 st.title("Unified Explainable AI Interface")
-st.write("Image and audio classification with explainability methods.")
+st.write("Image & Audio classification with explainability")
 
 # ==================================================
-# Sidebar - Input
+# Sidebar – Input
 # ==================================================
 uploaded_file = st.sidebar.file_uploader(
-    "Upload an image (.png, .jpg)",
-    type=["png", "jpg", "jpeg"]
+    "Upload an image (.png, .jpg) or audio (.wav)",
+    type=["png", "jpg", "jpeg", "wav"]
 )
 
-# ==================================================
-# Model registry
-# ==================================================
-IMAGE_MODELS = {
-    "alexnet": ("AlexNet", load_alexnet),
-    "densenet": ("DenseNet", load_densenet),
-}
+def detect_input_type(file):
+    return "audio" if file.name.lower().endswith(".wav") else "image"
 
-XAI_METHODS = ["gradcam", "lime", "shap"]
-
-# ==================================================
-# Main logic
-# ==================================================
 if uploaded_file is not None:
 
-    # --------------------------------------------------
-    # Model selection
-    # --------------------------------------------------
+    input_type = detect_input_type(uploaded_file)
+    st.sidebar.markdown(f"**Detected input type:** `{input_type}`")
+
+    models_available = MODEL_REGISTRY[input_type]
+
+
     model_key = st.sidebar.selectbox(
         "Select model",
-        list(IMAGE_MODELS.keys()),
-        format_func=lambda k: IMAGE_MODELS[k][0]
+        list(models_available.keys()),
+        format_func=lambda k: models_available[k]["name"]
     )
+
 
     xai_method = st.sidebar.selectbox(
         "Select XAI method",
-        XAI_METHODS
+        ["gradcam", "lime", "shap"]
     )
 
-    # --------------------------------------------------
-    # Load image
-    # --------------------------------------------------
-    image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Uploaded image", width=300)
-
-    # --------------------------------------------------
-    # Preprocessing
-    # --------------------------------------------------
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(
-            mean=[0.485, 0.456, 0.406],
-            std=[0.229, 0.224, 0.225],
-        )
-    ])
-
-    x = transform(image).unsqueeze(0)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    x = x.to(device)
 
-    # --------------------------------------------------
-    # Load model
-    # --------------------------------------------------
+
+    if input_type == "image":
+        image = Image.open(uploaded_file).convert("RGB")
+        st.image(image, caption="Input image", width=300)
+
+        x, transform = preprocess_image(image, device)
+
+
+    else:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+            tmp.write(uploaded_file.read())
+            wav_path = tmp.name
+
+        st.audio(wav_path)
+
+        x, image, transform = preprocess_audio(wav_path, device)
+        st.image(image, caption="Spectrogram", width=300)
+
+
     with st.spinner("Loading model..."):
-        model = IMAGE_MODELS[model_key][1](device=device)
+        model = models_available[model_key]["loader"](device=device)
 
-    # --------------------------------------------------
-    # Prediction
-    # --------------------------------------------------
+    labels = models_available[model_key]["labels"]
+
+
     with torch.no_grad():
         logits = model(x)
         probs = torch.softmax(logits, dim=1)
-        pred_idx = int(torch.argmax(probs, dim=1).item())
+        pred_idx = int(torch.argmax(probs, dim=1))
         confidence = probs[0, pred_idx].item()
 
-    LABELS = ["fake", "real"]
-
     st.success(
-        f"Prediction: **{LABELS[pred_idx]}** "
+        f"Prediction: **{labels[pred_idx]}** "
         f"(confidence: {confidence:.3f})"
     )
 
     st.divider()
     st.subheader("Explainability")
 
-    # ==================================================
-    # GRAD-CAM
-    # ==================================================
+
     if xai_method == "gradcam":
-        if st.button("Run Grad-CAM"):
-            with st.spinner("Computing Grad-CAM..."):
-                target_layer = model.features[-1]
-                cam = GradCAM(model, target_layer)
-                heatmap = cam.generate(x, class_idx=pred_idx)
-                overlay = cam.overlay_on_image(image, heatmap)
+        target_layer = models_available[model_key].get("target_layer")
 
-            st.image(overlay, caption="Grad-CAM", use_column_width=True)
+        if target_layer is None:
+            st.warning("Grad-CAM not supported for this model.")
+        else:
+            cam = GradCAM(model, target_layer)
+            heatmap = cam.generate(x, pred_idx)
+            overlay = cam.overlay_on_image(image, heatmap)
+            st.image(overlay, caption="Grad-CAM")
 
-    # ==================================================
-    # LIME
-    # ==================================================
+
     elif xai_method == "lime":
-        if st.button("Run LIME"):
-            with st.spinner("Computing LIME..."):
-                explainer = LimeExplainer(
-                    model=model,
-                    device=device,
-                    transform=transform
-                )
+        explainer = LimeExplainer(model, device, transform)
+        lime_vis = explainer.explain(np.array(image), pred_idx)
+        st.image(lime_vis, caption="LIME explanation")
 
-                image_np = np.array(image)
-                lime_vis = explainer.explain(
-                    image_np=image_np,
-                    class_idx=pred_idx
-                )
 
-            st.image(lime_vis, caption="LIME", use_column_width=True)
-
-    # ==================================================
-    # SHAP
-    # ==================================================
     elif xai_method == "shap":
-        if st.button("Run SHAP (slow)"):
-            with st.spinner("Computing SHAP (this may take time)..."):
-                background = torch.zeros((1, 3, 224, 224)).to(device)
-                explainer = ShapExplainer(model, background)
+        background = torch.zeros_like(x).to(device)
+        explainer = ShapExplainer(model, background)
 
-                shap_values = explainer.explain(x)
-                heatmap = shap_to_heatmap(shap_values[pred_idx][0])
+        shap_values = explainer.explain(x)
+        heatmap = shap_to_heatmap(shap_values[pred_idx][0])
 
-                heatmap = cv2.resize(heatmap, (224, 224))
-                heatmap = np.uint8(255 * heatmap)
-                heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-
-                img_np = np.array(image.resize((224, 224)))
-                overlay = cv2.addWeighted(img_np, 0.6, heatmap, 0.4, 0)
-
-            st.image(overlay, caption="SHAP", use_column_width=True)
+        st.image(heatmap, caption="SHAP heatmap", clamp=True)

@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from lime import lime_image
 from skimage.segmentation import mark_boundaries
+from PIL import Image
 
 
 class LimeExplainer:
@@ -26,7 +27,8 @@ class LimeExplainer:
 
         for img in images:
             img = img.astype(np.uint8)
-            tensor = self.transform(img).unsqueeze(0)
+            pil_img = Image.fromarray(img)   # ✅ FIX ICI
+            tensor = self.transform(pil_img).unsqueeze(0)
             batch.append(tensor)
 
         batch = torch.cat(batch).to(self.device)
