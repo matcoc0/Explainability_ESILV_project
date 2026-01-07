@@ -42,8 +42,8 @@ def main():
         writer.writeheader()
         writer.writerows(all_mappings)
 
-    print(f"✅ Renommage terminé")
-    print(f"✅ Mapping CSV créé : {OUTPUT_CSV}")
+    print(f"Renommage terminé")
+    print(f"Mapping CSV créé : {OUTPUT_CSV}")
 
 if __name__ == "__main__":
     main()
