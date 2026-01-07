@@ -8,7 +8,7 @@ from torchvision import transforms
 import matplotlib.pyplot as plt
 
 from models.image.alexnet import load_model
-from xai.image.shap import ShapExplainer
+from xai.shap import ShapExplainer
 
 # --------------------------------------------------
 # PATHS

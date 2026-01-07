@@ -8,7 +8,7 @@ from torchvision import transforms
 import matplotlib.pyplot as plt
 
 from models.audio.mobilenet import load_model
-from xai.image.shap import ShapExplainer
+from xai.shap import ShapExplainer
 
 PROJECT_ROOT = os.getcwd()
 CONFIG_PATH = os.path.join(PROJECT_ROOT, "models/audio/mobilenet/config.yaml")

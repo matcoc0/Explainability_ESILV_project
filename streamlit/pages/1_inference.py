@@ -1,4 +1,3 @@
-# pages/1_Inference.py
 # ==================================================
 # FORCE PROJECT ROOT
 # ==================================================
@@ -32,17 +31,11 @@ from xai.shap import ShapExplainer, shap_to_heatmap, overlay_shap
 st.header("Inference & Explainability")
 
 uploaded_file = st.sidebar.file_uploader(
-    "Upload an image (.png, .jpg) or audio (.wav)",
-    type=["png", "jpg", "jpeg", "wav"]
+    "Upload an image (.png, .jpg) or audio (.wav)", type=["png", "jpg", "jpeg", "wav"]
 )
 
 def detect_input_type(file):
     return "audio" if file.name.lower().endswith(".wav") else "image"
-
-XAI_COMPATIBILITY = {
-    "image": ["gradcam", "lime", "shap"],
-    "audio": ["gradcam", "lime", "shap"],
-}
 
 if uploaded_file is None:
     st.info("Upload an image or a wav file to start.")
@@ -57,15 +50,10 @@ st.sidebar.markdown(f"**Detected input:** `{input_type}`")
 models_available = MODEL_REGISTRY[input_type]
 
 model_key = st.sidebar.selectbox(
-    "Select model",
-    list(models_available.keys()),
-    format_func=lambda k: models_available[k]["name"]
+    "Select model", list(models_available.keys()), format_func=lambda k: models_available[k]["name"]
 )
 
-xai_method = st.sidebar.selectbox(
-    "Select XAI method",
-    XAI_COMPATIBILITY[input_type]
-)
+xai_method = st.sidebar.selectbox("Select XAI method", ["gradcam", "lime", "shap"])
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 

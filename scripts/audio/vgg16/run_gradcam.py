@@ -6,7 +6,7 @@ from PIL import Image
 from torchvision import transforms
 
 from models.audio.vgg16 import load_model
-from xai.image.gradcam import GradCAM
+from xai.gradcam import GradCAM
 
 PROJECT_ROOT = os.getcwd()
 CONFIG_PATH = os.path.join(PROJECT_ROOT, "models/audio/vgg16/config.yaml")

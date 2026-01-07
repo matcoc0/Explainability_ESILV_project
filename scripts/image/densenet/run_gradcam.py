@@ -6,7 +6,7 @@ from PIL import Image
 from torchvision import transforms
 
 from models.image.densenet import load_model
-from xai.image.gradcam import GradCAM
+from xai.gradcam import GradCAM
 
 PROJECT_ROOT = os.getcwd()
 

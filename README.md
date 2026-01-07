@@ -31,6 +31,7 @@ Integrated Repositories
 
 Project Structure
 -----------------
+```
 streamlit/
 │
 ├── app.py                     # Landing page + navigation
@@ -52,7 +53,7 @@ xai/
 │   ├── gradcam.py
 │   ├── lime.py
 │   └── shap.py
-
+```
 
 How to Run the Application
 --------------------------

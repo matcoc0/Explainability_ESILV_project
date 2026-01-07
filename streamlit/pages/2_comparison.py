@@ -70,8 +70,7 @@ st.write("Side-by-side comparison of explainability methods")
 # Sidebar – Input
 # ==================================================
 uploaded_file = st.sidebar.file_uploader(
-    "Upload an image (.png, .jpg) or audio (.wav)",
-    type=["png", "jpg", "jpeg", "wav"]
+    "Upload an image (.png, .jpg) or audio (.wav)", type=["png", "jpg", "jpeg", "wav"]
 )
 
 if uploaded_file is None:
@@ -146,13 +145,13 @@ case = confusion_case(y_true, pred_idx)
 st.subheader("Prediction analysis")
 
 if case == "True Positive":
-    st.success("🟢 True Positive – correct detection of a real sample")
+    st.success("True Positive – correct detection of a real sample")
 elif case == "True Negative":
-    st.success("🟢 True Negative – correct detection of a fake sample")
+    st.success("True Negative – correct detection of a fake sample")
 elif case == "False Positive":
-    st.error("🔴 False Positive – fake sample classified as real")
+    st.error("False Positive – fake sample classified as real")
 elif case == "False Negative":
-    st.error("🔴 False Negative – real sample classified as fake")
+    st.error("False Negative – real sample classified as fake")
 else:
     st.info("Ground truth could not be inferred from filename")
 
@@ -198,7 +197,7 @@ with col3:
     explainer = ShapExplainer(model, background)
     shap_values = explainer.explain(x)
 
-    # ✅ SAME LOGIC AS PAGE 1
+    # SAME LOGIC AS PAGE 1
     sv = shap_values[0][0]      # (C, H, W)
     heatmap = shap_to_heatmap(sv, target_size=image.size)
     overlay = overlay_shap(image, heatmap)
