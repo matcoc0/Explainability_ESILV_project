@@ -1,16 +1,12 @@
-# ==================================================
-# FORCE PROJECT ROOT
-# ==================================================
 import os
 import sys
 
+# Force project root
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# ==================================================
 # Imports
-# ==================================================
 import streamlit as st
 import torch
 import numpy as np
@@ -25,9 +21,7 @@ from xai.gradcam import GradCAM, find_last_conv_layer
 from xai.lime import LimeExplainer
 from xai.shap import ShapExplainer, shap_to_heatmap, overlay_shap
 
-# ==================================================
 # Utils – Ground truth & confusion case
-# ==================================================
 def infer_ground_truth(filename: str, input_type: str):
     name = filename.lower()
 
@@ -59,16 +53,13 @@ def confusion_case(y_true, y_pred):
         return "False Negative"
 
 
-# ==================================================
 # Page config
-# ==================================================
+
 st.set_page_config(page_title="XAI Comparison", layout="wide")
 st.title("XAI Comparison")
 st.write("Side-by-side comparison of explainability methods")
 
-# ==================================================
 # Sidebar – Input
-# ==================================================
 uploaded_file = st.sidebar.file_uploader(
     "Upload an image (.png, .jpg) or audio (.wav)", type=["png", "jpg", "jpeg", "wav"]
 )
@@ -85,9 +76,7 @@ def detect_input_type(file):
 input_type = detect_input_type(uploaded_file)
 st.sidebar.markdown(f"**Detected input type:** `{input_type}`")
 
-# ==================================================
 # Model selection
-# ==================================================
 models_available = MODEL_REGISTRY[input_type]
 
 model_key = st.sidebar.selectbox(
@@ -98,9 +87,7 @@ model_key = st.sidebar.selectbox(
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# ==================================================
 # Preprocessing
-# ==================================================
 if input_type == "image":
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Input image", width=250)
@@ -115,15 +102,11 @@ else:
     x, image, transform = preprocess_audio(wav_path, device)
     st.image(image, caption="Spectrogram", width=250)
 
-# ==================================================
 # Load model
-# ==================================================
 model = models_available[model_key]["loader"](device=device)
 labels = models_available[model_key]["labels"]
 
-# ==================================================
 # Prediction
-# ==================================================
 with torch.no_grad():
     logits = model(x)
     probs = torch.softmax(logits, dim=1)
@@ -135,9 +118,7 @@ st.success(
     f"Prediction: **{labels[pred_idx]}** (confidence: {confidence:.3f})"
 )
 
-# ==================================================
 # Confusion case
-# ==================================================
 filename = uploaded_file.name
 y_true = infer_ground_truth(filename, input_type)
 case = confusion_case(y_true, pred_idx)
@@ -155,17 +136,13 @@ elif case == "False Negative":
 else:
     st.info("Ground truth could not be inferred from filename")
 
-# ==================================================
 # XAI Comparison
-# ==================================================
 st.divider()
 st.subheader("Explainability comparison")
 
 col1, col2, col3 = st.columns(3)
 
-# -------------------------
 # Grad-CAM
-# -------------------------
 with col1:
     st.markdown("### Grad-CAM")
     target_layer = find_last_conv_layer(model)
@@ -178,18 +155,14 @@ with col1:
         overlay = cam.overlay_on_image(image, heatmap)
         st.image(overlay, use_container_width=True)
 
-# -------------------------
 # LIME
-# -------------------------
 with col2:
     st.markdown("### LIME")
     explainer = LimeExplainer(model, device, transform)
     lime_vis = explainer.explain(np.array(image), pred_idx)
     st.image(lime_vis, use_container_width=True)
 
-# -------------------------
-# SHAP (FIXED)
-# -------------------------
+# SHAP
 with col3:
     st.markdown("### SHAP")
 
@@ -197,8 +170,8 @@ with col3:
     explainer = ShapExplainer(model, background)
     shap_values = explainer.explain(x)
 
-    # SAME LOGIC AS PAGE 1
-    sv = shap_values[0][0]      # (C, H, W)
+    # Same logic as page 1
+    sv = shap_values[0][0] # for (C, H, W)
     heatmap = shap_to_heatmap(sv, target_size=image.size)
     overlay = overlay_shap(image, heatmap)
 

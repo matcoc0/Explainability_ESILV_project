@@ -1,16 +1,12 @@
-# ==================================================
-# FORCE PROJECT ROOT
-# ==================================================
 import os
 import sys
 
+# Force project root
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-# ==================================================
 # Imports
-# ==================================================
 import streamlit as st
 import torch
 import numpy as np
@@ -25,9 +21,7 @@ from xai.gradcam import GradCAM, find_last_conv_layer
 from xai.lime import LimeExplainer
 from xai.shap import ShapExplainer, shap_to_heatmap, overlay_shap
 
-# ==================================================
 # Page UI
-# ==================================================
 st.header("Inference & Explainability")
 
 uploaded_file = st.sidebar.file_uploader(
@@ -41,9 +35,7 @@ if uploaded_file is None:
     st.info("Upload an image or a wav file to start.")
     st.stop()
 
-# ==================================================
 # Selection
-# ==================================================
 input_type = detect_input_type(uploaded_file)
 st.sidebar.markdown(f"**Detected input:** `{input_type}`")
 
@@ -57,9 +49,7 @@ xai_method = st.sidebar.selectbox("Select XAI method", ["gradcam", "lime", "shap
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# ==================================================
 # Preprocessing
-# ==================================================
 if input_type == "image":
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Input image", width=300)
@@ -74,9 +64,7 @@ else:
     x, image, transform = preprocess_audio(wav_path, device)
     st.image(image, caption="Spectrogram", width=300)
 
-# ==================================================
 # Model & prediction
-# ==================================================
 model = models_available[model_key]["loader"](device=device)
 labels = models_available[model_key]["labels"]
 
@@ -90,9 +78,7 @@ st.success(
     f"Prediction: **{labels[pred_idx]}** (confidence: {confidence:.3f})"
 )
 
-# ==================================================
 # Explainability
-# ==================================================
 st.divider()
 st.subheader("Explainability")
 
