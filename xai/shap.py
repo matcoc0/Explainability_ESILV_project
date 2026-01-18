@@ -6,9 +6,7 @@ import cv2
 from PIL import Image
 
 
-# --------------------------------------------------
 # Utils
-# --------------------------------------------------
 def disable_inplace_relu(model):
     """
     Disable inplace ReLU for SHAP compatibility
@@ -18,9 +16,7 @@ def disable_inplace_relu(model):
             module.inplace = False
 
 
-# --------------------------------------------------
 # SHAP Explainer
-# --------------------------------------------------
 class ShapExplainer:
     """
     SHAP GradientExplainer wrapper for CNNs
@@ -43,7 +39,6 @@ class ShapExplainer:
     def explain(self, x):
         """
         Returns:
-        --------
         shap_values : list
             shap_values[class] -> (1, C, H, W)
         """
@@ -52,9 +47,7 @@ class ShapExplainer:
         return shap_values
 
 
-# --------------------------------------------------
 # Post-processing
-# --------------------------------------------------
 def shap_to_heatmap(shap_values, target_size):
     """
     Convert SHAP values (C,H,W) to normalized heatmap (H,W)

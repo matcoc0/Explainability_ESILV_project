@@ -27,7 +27,7 @@ class LimeExplainer:
 
         for img in images:
             img = img.astype(np.uint8)
-            pil_img = Image.fromarray(img)   # ✅ FIX ICI
+            pil_img = Image.fromarray(img) 
             tensor = self.transform(pil_img).unsqueeze(0)
             batch.append(tensor)
 

@@ -6,9 +6,7 @@ import cv2
 from PIL import Image
 
 
-# ==================================================
 # Utils
-# ==================================================
 def disable_inplace_relu(model: nn.Module):
     """
     Disable inplace ReLU to avoid autograd + backward hook crashes.
@@ -29,9 +27,7 @@ def find_last_conv_layer(model: nn.Module):
     return last_conv
 
 
-# ==================================================
 # Grad-CAM
-# ==================================================
 class GradCAM:
     """
     Stable Grad-CAM implementation (PyTorch 2+ safe)
@@ -74,7 +70,7 @@ class GradCAM:
         cam = F.relu(cam)
         cam = cam.squeeze().detach().cpu().numpy()
 
-        # cam is still in feature-map space → resize later
+        # cam is still in feature-map space => resize later
         cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
         return cam
 
@@ -90,7 +86,6 @@ class GradCAM:
         img_np = np.array(img)
         h, w = img_np.shape[:2]
 
-        # 🔴 CRITICAL FIX
         heatmap = cv2.resize(heatmap, (w, h))
 
         heatmap = np.uint8(255 * heatmap)
